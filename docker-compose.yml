@@ -1,0 +1,34 @@
+---
+
+### 2. `docker-compose.yml`
+
+Файл для быстрого развертывания сервиса одной командой с лимитами ресурсов, чтобы показать оптимизацию.
+
+```yaml
+version: '3.8'
+
+services:
+  fast-atomrag:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: atomrag-core
+    ports:
+      - "8000:8000"
+    environment:
+      - ONNX_MODEL_PATH=/app/models/model.onnx
+      - PYTHONUNBUFFERED=1
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1.5G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/liveness"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped
