@@ -1,0 +1,21 @@
+services:
+  fast-atomrag:
+    build: .
+    image: fast-atomrag-core:local
+    ports:
+      - "8000:8000"
+    environment:
+      ATOMRAG_DB_PATH: /data/atoms.db
+      ATOMRAG_API_KEY: ${ATOMRAG_API_KEY:-}
+      ATOMRAG_LOG_LEVEL: INFO
+    volumes:
+      - atomrag-data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G
+    restart: unless-stopped
+
+volumes:
+  atomrag-data:
